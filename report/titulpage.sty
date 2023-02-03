@@ -1,0 +1,102 @@
+\RequirePackage[russian]{babel}
+\RequirePackage{amsmath}
+\RequirePackage{graphicx}
+\RequirePackage{multicol}
+\RequirePackage{indentfirst}
+
+\newcommand{\dhrule}[3]{
+    {
+        \parindent 0pt
+        \rule{\textwidth}{#1}
+        
+        \vspace{\dimexpr - \baselineskip + 1mm + #3 - 1pt}
+        
+        \rule{\textwidth}{#2}
+    }
+}
+
+\newcommand{\uline}[1]{\underline{#1\vphantom{lp}}}
+
+\newcommand{\defaultfont}{\fontsize{14}{22} \selectifont}
+
+\newcommand{\fefutitlepage}[5]{
+    
+    {   
+    \parindent 0pt
+    \thispagestyle{empty}
+    
+        \begin{center}
+        
+            \includegraphics[scale=0.2]{fefulogo.pdf}
+            
+            \vspace{10pt}
+            
+            {\fontsize{9}{9} \selectifont МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ}
+            
+             {\fontsize{10}{10} \selectifont Федеральное государственное автономное образовательное учреждение высшего образования}
+             
+            \textbf{<<Дальневосточный федеральный унирерситет>>}
+            
+            \textbf{(ДВФУ)}
+            
+            \dhrule{3pt}{1pt}{0pt}
+
+            \textbf{ИНСТИТУТ МАТЕМАТИКИ И КОМПЬЮТЕРНЫХ ТЕХНОЛОГИЙ}
+            
+            \textbf{Департамент математического и компьютерного моделирования}
+            
+            \vspace{30pt}
+            
+            \textbf{ДОКЛАД}
+
+            \textbf{о практическом задании по дисциплине АИСД}
+                       
+            <<Алгоритм сжатия цветков>>
+            
+            \vspace{12pt}
+            
+            Направление подготовки 09.03.03 <<Прикладная информатика>>
+
+            профиль <<Прикладная информатика в компьютерном дизайне>>
+            
+            
+        \end{center}
+        
+        \vspace{30pt}
+        
+    \begin{multicols}{2}
+        
+        \vfill\null
+        
+        \columnbreak
+        
+        Выполнил студент \newline гр. #1
+        
+        \underset{
+            \textit{(ФИО)}
+        }{
+            \uline{\text{#2}}
+        }
+         \underset{
+            \textit{(подпись)}
+        }{
+            \uline{\hspace{60pt}}
+        }
+        
+        \vspace{10pt}
+        
+        <<\uline{ #3 }>> \uline{#4} 20\uline{#5} г.
+        
+    \end{multicols}
+            
+    \vfill
+    
+    \begin{center}
+        \textbf{г.Владивосток\linebreak20#5}
+    \end{center}
+    
+    }
+    
+    \pagebreak
+
+}
