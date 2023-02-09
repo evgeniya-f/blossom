@@ -10,7 +10,33 @@
 \evensidemargin -3mm
 \topmargin -20mm
 \parindent 1.25cm
-\bibliography{sources.bib}
+
+\usepackage[unicode, pdftex]{hyperref}
+\hypertarget{d6}{Определение инвариантного пространства}
+
+
+\lstset{tabsize=2,
+    breaklines,
+    columns=fullflexible,
+    flexiblecolumns,
+    numbers=left,
+    numberstyle={\footnotesize},
+    extendedchars=\true
+}
+\lstdefinelanguage{MyC}{
+  language=C,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  morecomment=[n]{/**}{*/},
+  commentstyle=\color{blue}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]",
+  showstringspaces=false,
+  morecomment=[l][\color{gray}]{//},
+  keepspaces=true,
+  escapechar=\%,
+  texcl=true
+}
 
 \begin{document}
     
@@ -38,7 +64,11 @@
 
     \textbf{Свободная вершина} --- вершина графа, не покрытая паросочетанием
 
-    \textbf{Дополняющий(увеличивающий) путь} --- чередующаяся цепь, которая начинается и кончается голыми вершинами.
+    \textbf{Не инцидентные ребра} --- отношение между рёбрами, в котором существует соединяющая их вершина.
+
+    \textbf{Чередующаяся цепь} --- путь в графе, в котором для любых двух соседних рёбер верно, что одно из них принадлежит паросочетанию M, а другое нет.
+
+    \textbf{Дополняющий(увеличивающий) путь} --- чередующаяся цепь, которая начинается и кончается свободными вершинами.
 
     \textbf{Цветок(соцветие/бутон)} --- нечетный цикл графа
 
@@ -58,12 +88,11 @@
    
     \subsection*{Историческая справка}
     \addcontentsline{toc}{subsection}{Историческая справка}
-   
-    Алгоритм разработал Джек Эдмондс в 1961 году и опубликовал в 1965 году. 
+
+    Алгоритмы поиска максимальных совпадений достаточно сложны. Джек Эдмондс сообщил о первом эффективном подходе в 1960-х годах, что стало важной вехой в истории компьютерных наук. Его <<Blossom algorithm>> вдохновил на многочисленные вариации и альтернативы за последние несколько десятилетий.
+    Эдмондс разработал алгоритм в 1961 году и опубликовал в 1965 году. 
     
-    Основной причиной, почему алгоритм сжатия цветков важен, является то, что он дал первое доказательство возможности нахождения наибольшего паросочетания за полиномиальное время. Другой причиной является то, что метод приводит к описанию многогранника линейного программирования для многогранника паросочетаний, что приводит к алгоритму паросочетания минимального веса. 
-    
-    Как уточнил Александр Схрейвер, дальнейшая важность результата следует из факта, что этот многогранник был первым, доказательство целочисленности которого «не просто следовало из тотальной унимодулярности, а его описание было прорывом в комбинаторике многогранников».
+    Основной причиной, почему алгоритм сжатия цветков важен, является то, что он дал первое доказательство возможности нахождения наибольшего паросочетания за полиномиальное время. 
 
     \pagebreak
     
@@ -81,6 +110,8 @@
 
     \subsection*{Оценка сложности}
     \addcontentsline{toc}{subsection}{Оценка сложности}
+    
+    Пусть $n$ --- общее количество вершин, $n_1$ --- количество цветков,$n_2$ --- количество вершин в цветке,$m$ --- количество ребер. 
 
     Всего имеется $n$ итераций, на каждой из которых выполняется обход в ширину за $O(m)$ кроме того, могут происходить операции сжатия цветков — их может быть $O(n_1)$. Сжатие соцветий работает за $O(n_2)$, стоит отметить $n_1 \equiv n_2$, то есть общая асимптотика алгоритма составит $O(n(m+n^2))=O(n^3)$.
 
@@ -91,7 +122,7 @@
 
     Мы сможем найти максимальное паросочитание путем инверсии дополняющего пути.
 
-    Основная проблема заключается в том, как находить увеличивающий путь. Если в графе имеются циклы нечётной длины, то просто обход в глубину/ширину будет работать не корректно --- при попадании в цикл нечётной длины обход может пойти по циклу в неправильном направлении.
+    Основная проблема заключается в том, как находить увеличивающий путь. Если в графе имеются циклы нечётной длины, то просто обход в глубину/ширину будет работать некорректно --- при попадании в цикл нечётной длины обход может пойти по циклу в неправильном направлении.
 
     \pagebreak
 
@@ -109,18 +140,25 @@
     \textit{Доказательство}. 
     
     Обозначим через B цикл цветка, и через $\overline B$ соответствующую сжатую вершину.
-    Вначале заметим, что достаточно рассматривать случай, когда база цветка является свободной вершиной (не принадлежащей паросочетанию). Действительно, в противном случае в базе цветка оканчивается чередующийся путь чётной длины, начинающийся в свободной вершине. Прочередовав паросочетание вдоль этого пути, мощность паросочетания не изменится, а база цветка станет свободной вершиной. Итак, при доказательстве можно считать, что база цветка является свободной вершиной.
+    Вначале заметим, что достаточно рассматривать случай, когда база цветка является свободной вершиной (не принадлежащей паросочетанию). Действительно, в противном случае в базе цветка оканчивается чередующийся путь чётной длины, начинающийся в свободной вершине. Начиная со свободной вершины, помечаем не инцидентные ребра. Мощность паросочетания не изменится, а база цветка станет свободной вершиной. Итак, при доказательстве можно считать, что база цветка является свободной вершиной.
 
     Пусть путь $P$ является увеличивающим в графе $G$. Если он не проходит через B, то тогда, очевидно, он будет увеличивающим и в графе $\overline G$. Пусть P проходит через B. Тогда можно считать, что путь P представляет собой некоторый путь $P_1$, не проходящий по вершинам B, плюс некоторый путь $P_2$, проходящий по вершинам B и, возможно, другим вершинам. Но тогда путь $P_1$ + $\overline B$ будет являться увеличивающим путём в графе $\overline G$, что и требовалось доказать.
 
     \pagebreak
     
     \subsection*{Общая схема алгоритма}
+
     \addcontentsline{toc}{subsection}{Общая схема алгоритма}
+
+
+    $N$ --- количество вершин
+    
+    $i$ --- вершина
 
     \begin{figure}[h!]
         \centering
-        \includegraphics[scale=0.9]{psevdo.png}
+        \includegraphics[scale=0.6]{block schema.png}
+        \caption{Общая схема алгоритма}
         \label{fig:my_label}
     \end{figure}
 
@@ -209,7 +247,7 @@
     
     \begin{figure}[h!]
         \centering
-        \includegraphics[scale=0.3]{7.png}
+        \includegraphics[scale=0.3]{8.png}
         \caption{Восстановление второго цветка}
         \label{fig:my_label}
     \end{figure} 
@@ -220,7 +258,7 @@
 
     \begin{figure}[ht!]
         \centering
-        \includegraphics[scale=0.3]{8.png}
+        \includegraphics[scale=0.3]{7.png}
         \caption{Восстановление первого цветка}
         \label{fig:my_label}
     \end{figure} 
@@ -232,23 +270,62 @@
     \section*{Реализация}
     \addcontentsline{toc}{section}{Реализация}
 
-    %\subsection*{Представление графа}
-    %\addcontentsline{toc}{subsection}{Представление графа}
-    
-    \subsection*{Нахождение ближайшего предка}
-    \addcontentsline{toc}{subsection}{Нахождение ближайшего предка}
+    Написана библиотека $blossom.h$ для нахождения максимального паросочетания, в которой реализованы следующие функции:
 
     \begin{lstlisting}[language=c++]
-int lca(int a, int b) {
-	bool used[MAXN] = { 0 };
- 
+#pragma once
+#include <vector>
+#include <iostream>
+
+int get_match(std::vector<std::vector<int>>&, std::vector<int>&);
+
+void print_match(std::vector<int>&);
+    \end{lstlisting}
+
+    \subsection*{Поиск дополняющего пути}
+    \addcontentsline{toc}{subsection}{Поиск дополняющего пути}
+
+    Функция $get\_match()$ принимает список инцидентности и вектор, куда будет записано паросочетание. В результате работы помещает в переменную $a$ паросочетание.
+
+    \begin{lstlisting}[language=c++]
+int get_match(std::vector<std::vector<int>>& g, std::vector<int>& match) {
+
+	match.clear();
+	match.resize(g.size(), -1);
+	std::vector<int> p;
+	p.resize(g.size(), -1);
+
+	for (int i = 0; i < g.size(); i++) {
+		if (match[i] == -1) {
+			int v = find_path(i, g, match, p);
+			while (v != -1) {
+				int pv = p[v], ppv = match[pv];
+				match[v] = pv, match[pv] = v;
+				v = ppv;
+			}
+		}
+	}
+	return 0;
+}
+    \end{lstlisting}
+
+    \pagebreak
+
+    Для реализации функции $get\_match()$ были написаны вспомогательные функции:\\
+
+    Функция $lca()$ находит общего ближайшего предка для вершин цветка --- базу.
+
+    \begin{lstlisting}[language=c++]
+int lca(int a, int b, std::vector<int>& base, std::vector<int>& match, std::vector<int>& p) {
+	std::vector<bool> used;
+	used.resize(base.size(), false);
 	for (;;) {
 		a = base[a];
 		used[a] = true;
-		if (match[a] == -1)  break; // дошли до корня
+		if (match[a] == -1)  break; // äîøëè äî êîðíÿ
 		a = p[match[a]];
 	}
- 
+
 	for (;;) {
 		b = base[b];
 		if (used[b])  return b;
@@ -257,94 +334,125 @@ int lca(int a, int b) {
 }
     \end{lstlisting}
 
-
-    \subsection*{Обозначение дополняющего пути}
-    \addcontentsline{toc}{subsection}{Обозначение дополняющего пути}
-    \begin{lstlisting}[language=c++]
-void mark_path(int v, int b, int children) {
-    while (base[v] != b) {
-        blossom[base[v]] = blossom[base[match[v]]] = true;
-        p[v] = children;
-        children = match[v];
-        v = p[match[v]];
-    }
-} 
-    \end{lstlisting}
-
-    \pagebreak
-
-    \subsection*{Поиск дополняющего пути}
-    \addcontentsline{toc}{subsection}{Поиск дополняющего пути}
+    Функция $mark\_path()$ помечает чередующийся путь. 
 
     \begin{lstlisting}[language=c++]
-int find_path(int root) {
-    memset(used, 0, sizeof used);
-    memset(p, -1, sizeof p);
-    for (int i = 0; i < MAXN; i++)
-        base[i] = i;
-    
-    used[root] = true;
-    int qh = 0, qt = 0;
-    q[qt++] = root;
-    while (qh < qt) {
-        int v = q[qh++];
-        for (size_t i = 0; i < g[v].size(); i++) {
-            int to = g[v][i];
-            if (base[v] == base[to] || match[v] == to)  
-                continue;
-            if (to == root || match[to] != -1 && p[match[to]] != -1) {
-                int curbase = lca(v, to);
-                memset(blossom, 0, sizeof blossom);
-                mark_path(v, curbase, to);
-                mark_path(to, curbase, v);
-                for (int i = 0; i < MAXN; i++)
-                    if (blossom[base[i]]) {
-                        base[i] = curbase;
-                        if (!used[i]) {
-                            used[i] = true;
-                            q[qt++] = i;
-                        }
-                    }
-            }
-            else if (p[to] == -1) {
-                p[to] = v;
-                if (match[to] == -1)
-                    return to;
-                to = match[to];
-                used[to] = true;
-                q[qt++] = to;
-            }
-        }
-    }
-    return -1;
+void mark_path(int v, int b, int children, std::vector<int>& base, std::vector<int>& match, std::vector<int>& p, std::vector<bool>& blossom) {
+	while (base[v] != b) {
+		blossom[base[v]] = blossom[base[match[v]]] = true;
+		p[v] = children;
+		children = match[v];
+		v = p[match[v]];
+	}
+}
+
     \end{lstlisting}
 
+    Функция $find\_path()$ ищет дополняющий путь из каждой вершины. Результатом работы функции является последняя вершина дополняющего пути.
 
-    %\section*{Оптимизация}
-    %\addcontentsline{toc}{section}{Оптимизация}
+    \begin{lstlisting}[language=c++]
+int find_path(int root, std::vector<std::vector<int>> &g, std::vector<int> &match, std::vector<int>& p) {
+	p.clear();
+	p.resize(g.size(), -1);
 
-    %\subsection*{Возможная оптимизация}
-    %\addcontentsline{toc}{subsection}{Возможная оптимизация}
+	std::vector<bool> used;
+	used.resize(g.size(), false);
+	std::vector<bool> blossom;
+	std::vector<int> q;
+	q.resize(g.size(), 0);
+	std::vector<int> base;
+
+	for (int i = 0; i < g.size(); i++)
+		base.push_back(i);
+
+	used[root] = true;
+	int qh = 0, qt = 0;
+	q[qt++] = root;
+	while (qh < qt) {
+		int v = q[qh++];
+		for (size_t i = 0; i < g[v].size(); i++) {
+			int to = g[v][i];
+			if (base[v] == base[to] || match[v] == to)  continue;
+			if (to == root || match[to] != -1 && p[match[to]] != -1) {
+				int curbase = lca(v, to, base, match, p);
+				
+				blossom.clear();
+				blossom.resize(g.size(), false);
+
+				mark_path(v, curbase, to, base, match, p, blossom);
+				mark_path(to, curbase, v, base, match, p, blossom);
+				for (int i = 0; i < g.size(); i++)
+					if (blossom[base[i]]) {
+						base[i] = curbase;
+						if (!used[i]) {
+							used[i] = true;
+							q[qt++] = i;
+						}
+					}
+			}
+			else if (p[to] == -1) {
+				p[to] = v;
+				if (match[to] == -1)
+					return to;
+				to = match[to];
+				used[to] = true;
+				q[qt++] = to;
+			}
+		}
+	}
+	return -1;
+}
+    \end{lstlisting}
+
+    Также была реализована функция $print\_match()$ принимает паросочетание и выводит его в консоль.
+
+    \begin{lstlisting}[language=c++]
+void print_match(std::vector<int>& a) {
+	for (int i = 0; i < a.size(); i++) {
+		if (i < a[i]) {
+			std::cout << i << '-' << a[i] << "\n";
+		}
+	}
+}
+    \end{lstlisting}
     
-    %\section*{Тестирование}
-    %\addcontentsline{toc}{section}{Тестирование}
-
     \pagebreak
-
+    
     \begin{thebibliography}{}
-    
-    \bibitem{1} 
-    ИТМО, Викиконспекты --- Алгоритм вырезания соцветий.  4 сентября 2022. 
 
-    \bibitem{2} 
-    MAXimal --- Алгоритм Эдмондса нахождения наибольшего паросочетания в произвольных графах. 6 декабря 2012.\\
+    \bibitem{1} 
+    Jack Edmonds. Paths, trees, and flowers // Can. J. Math.. — 1965. — Т. 17. — С. 449–467.
+    URL: \href{https://archive.org/details/sim_canadian-journal-of-mathematics_1965_17_3/page/448/mode/2up}{https://archive.org/details/sim\_canadian-journal-of-mathematics\_1965\_17\_3/page/448/mode/2up}\\
     
-    \bibitem{3}
-    Энциклопедии Руниверсалис --- Алгоритм сжатия цветков.  28 ноября 2022.\\
+    \bibitem{2}
+    Denth-First --- Edmonds' Blossom Algorithm Part 1: Cast of Characters. URL: \href{https://depth-first.com/articles/2020/09/28/edmonds-blossom-algorithm-part-1-cast-of-characters/}
+    {https://depth-first.com/articles/2020/09/28/edmonds-blossom-algorithm-part-1-cast-of-characters/}\\
+
+    \bibitem{3} 
+    MAXimal --- Алгоритм Эдмондса нахождения наибольшего паросочетания в произвольных графах. 6 декабря 2012. 
+    URL: \href{https://e-maxx.ru/algo/matching_edmonds}
+    {https://e-maxx.ru/algo/matching\_edmonds}\\
     
     \bibitem{4}
-    Единый центр по исследованию искусственного интеллекта "ЕЦИИИ" --- Алгоритм вырезания соцветий и сжатия цветков.\\
+    Энциклопедии Руниверсалис --- Алгоритм сжатия цветков.  28 ноября 2022. URL: \href{https://руни.рф/index.php/Алгоритм_сжатия_цветков#Цветки_и_стягивание}
+    {https://руни.рф/index.php/Алгоритм\_сжатия\_цветков\#Цветки\_и\_стягивание}\\
     
+    \bibitem{5}
+    Единый центр по исследованию искусственного интеллекта "ЕЦИИИ" --- Алгоритм вырезания соцветий и сжатия цветков. URL: \href{https://intellect.icu/algoritm-vyrezaniya-sotsvetij-i-szhatiya-tsvetkov-8626}
+    {https://руни.рф/index.php/Алгоритм\_сжатия\_цветков\#Цветки\_и\_стягивание}\\
+
+    \bibitem{6}
+    ИТМО, Викиконспекты --- Алгоритм вырезания соцветий.  4 сентября 2022. 
+    URL: \href{https://neerc.ifmo.ru/wiki/index.php?title=Алгоритм_вырезания_соцветий}{https://neerc.ifmo.ru/wiki/index.php?title=Алгоритм\_вырезания\_соцветий}\\
+
+    \bibitem{7}
+    TUM. The Entrepreneurial University ---Edmonds's Blossom Algorithm. 2016 URL: \href{https://algorithms.discrete.ma.tum.de/graph-algorithms/matchings-blossom-algorithm/index_en.html}
+    {https://algorithms.discrete.ma.tum.de/graph-algorithms/matchings-blossom-algorithm/index_en.html}\\
+
+    \bibitem{8}
+    Infogalactic: the planetary knowledge core --- Blossom algorithm. 19 February 2015. URL: \href{https://infogalactic.com/info/Blossom_algorithm}
+    {https://infogalactic.com/info/Blossom_algorithm}\\
+
     \end{thebibliography}    
     
     \addcontentsline{toc}{section}{Список литературы}
