@@ -8,24 +8,24 @@ using namespace std;
 
 int main() {
 
-	vector<vector<int>> copy;
+	vector<vector<int>> graph;
 	ifstream infile("graph.txt");
 	string line;
 	while (getline(infile, line)) {
-		vector<int> vertexes;
-		std::istringstream iss(line);
-		int a;
-		while (iss >> a) {
-			vertexes.push_back(a);
+		vector<int> vertex;
+		istringstream iss(line);
+		int adjacent_vertex;
+		while (iss >> adjacent_vertex) {
+			vertex.push_back(adjacent_vertex);
 		}
-		copy.push_back(vertexes);
+		graph.push_back(vertex);
 	}
 
-	std::vector<int> a;
+	vector<int> matching;
 
-	get_match(copy, a);
+	get_match(graph, matching);
 
-	print_match(a);
+	print_match(matching);
 
 	return 0;
 
