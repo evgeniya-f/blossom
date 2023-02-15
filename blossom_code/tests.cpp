@@ -19,11 +19,13 @@ void matching(std::string path, std::vector<std::vector<int>>& graph, std::vecto
 
 bool edges_existence(std::vector<std::vector<int>>& graph, std::vector<int>& match) {
 	for (int i = 0; i < match.size(); i++) {
-		if (std::find(graph[i].begin(), graph[i].end(), match[i]) != graph[i].end()) {
-			break;
-		}
-		else {
-			return false;
+		if (match[i] != -1) {
+			if (std::find(graph[i].begin(), graph[i].end(), match[i]) != graph[i].end()) {
+				continue;
+			}
+			else {
+				return false;
+			}
 		}
 	}
 	return true;
