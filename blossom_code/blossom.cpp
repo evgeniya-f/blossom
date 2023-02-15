@@ -1,11 +1,7 @@
 #include "blossom.h"
 
 
-
-const int MAXN = 10; // максимально возможное число вершин во входном графе
-
-
-//нахождение ближайшего предка
+//нахождение общего ближайшего предка (Least Common Ancestor)
 int lca(int a, int b, std::vector<int>& base, std::vector<int>& match, std::vector<int>& p) {
 	std::vector<bool> used;
 	used.resize(base.size(), false);
@@ -23,7 +19,8 @@ int lca(int a, int b, std::vector<int>& base, std::vector<int>& match, std::vect
 		b = p[match[b]];
 	}
 }
-//обозначение доп. пути 
+
+//обозначение доп. путь от вершины до базы
 void mark_path(int v, int b, int children, std::vector<int>& base, std::vector<int>& match, std::vector<int>& p, std::vector<bool>& blossom) {
 	while (base[v] != b) {
 		blossom[base[v]] = blossom[base[match[v]]] = true;
@@ -34,7 +31,7 @@ void mark_path(int v, int b, int children, std::vector<int>& base, std::vector<i
 }
 
 //поиск доп. пути из свободной вершины root и возвращает последнюю вершину этого пути, либо -1, если ув. путь не найден
-int find_path(int root, std::vector<std::vector<int>> &g, std::vector<int> &match, std::vector<int>& p) {
+int find_path(int root, std::vector<std::vector<int>>& g, std::vector<int>& match, std::vector<int>& p) {
 	p.clear();
 	p.resize(g.size(), -1);
 
@@ -56,10 +53,11 @@ int find_path(int root, std::vector<std::vector<int>> &g, std::vector<int> &matc
 		int v = q[qh++];
 		for (size_t i = 0; i < g[v].size(); i++) {
 			int to = g[v][i];
-			if (base[v] == base[to] || match[v] == to)  continue;
-			if (to == root || match[to] != -1 && p[match[to]] != -1) {
-				int curbase = lca(v, to, base, match, p);
-				
+			if (base[v] == base[to] || match[v] == to)  continue;			//ребро не существует
+
+			if (to == root || match[to] != -1 && p[match[to]] != -1) {		//ребро замыкает нечетный цикл - обнаруживается цветок
+				int curbase = lca(v, to, base, match, p);					//сжатие цветка
+
 				blossom.clear();
 				blossom.resize(g.size(), false);
 
@@ -74,7 +72,7 @@ int find_path(int root, std::vector<std::vector<int>> &g, std::vector<int> &matc
 						}
 					}
 			}
-			else if (p[to] == -1) {
+			else if (p[to] == -1) {		//обычное ребро
 				p[to] = v;
 				if (match[to] == -1)
 					return to;
@@ -108,10 +106,10 @@ int get_match(std::vector<std::vector<int>>& g, std::vector<int>& match) {
 	return 0;
 }
 
-void print_match(std::vector<int>& a) {
-	for (int i = 0; i < a.size(); i++) {
-		if (i < a[i]) {
-			std::cout << i << '-' << a[i] << "\n";
+void print_match(std::vector<int>& match) {
+	for (int i = 0; i < match.size(); i++) {
+		if (i < match[i]) {
+			std::cout << i << ' ' << match[i] << "\n";
 		}
 	}
 }

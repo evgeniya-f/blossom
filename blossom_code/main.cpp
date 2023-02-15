@@ -1,8 +1,9 @@
-#include "blossom.h"
+﻿#include "blossom.h"
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <fstream>
+#include <time.h> 
 
 using namespace std;
 
@@ -22,9 +23,11 @@ int main() {
 	}
 
 	vector<int> matching;
-
+	clock_t start = clock();
 	get_match(graph, matching);
-
+	clock_t end = clock();
+	double seconds = (double)(end - start) / CLOCKS_PER_SEC;
+	printf("The time: %f seconds\n", seconds);
 	print_match(matching);
 
 	return 0;
